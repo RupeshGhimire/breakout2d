@@ -31,8 +31,8 @@
         var x = canvas.width / 2;
         var y = canvas.height - 30;
 
-        var dx = 3;
-        var dy = -3;
+        var dx = 2;
+        var dy = -2;
 
         var paddleHeight = 10;
         var paddleWidth = 75;
@@ -56,9 +56,6 @@
                 bricks[c][r] = { x: 0, y: 0, status: 1 };
             }
         }
-
-        var score = 0;
-        var lives = 3;
 
         function drawBall() {
             ctx.beginPath();
@@ -94,26 +91,11 @@
             }
         }
 
-
-        function drawScore() {
-            ctx.font = "16px Arial";
-            ctx.fillStyle = "#0095DD";
-            ctx.fillText("Score: " + score, 8, 20);
-        }
-
-        function drawLives() {
-            ctx.font = "16px Arial";
-            ctx.fillStyle = "#0095DD";
-            ctx.fillText("Lives: " + lives, canvas.width - 65, 20);
-        }
-
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawBricks();
             drawBall();
             drawPaddle();
-            drawScore();
-            drawLives();
+            drawBricks();
             collisionDetection();
 
             if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -128,18 +110,9 @@
                     dy = -dy
                 }
                 else {
-                    lives--;
-                    if(!lives){
-                        alert("GAME OVER");
-                        document.location.reload();
-                    }
-                    else{
-                        x = canvas.width/2;
-                        y = canvas.height-30;
-                        dx = 3;
-                        dy = -3;
-                        paddleX = (canvas.width-paddleWidth)/2;
-                    }
+                    alert("Game Over");
+                    document.location.reload();
+                    clearInterval(interval);
                 }
             }
 
@@ -160,21 +133,11 @@
 
             x += dx;
             y += dy;
-
-            requestAnimationFrame(draw);
         }
 
 
         document.addEventListener("keydown", keyDownHandler, false);
         document.addEventListener("keyup", keyUpHandler, false);
-        document.addEventListener("mousemove", mouseMoveHandler, false);
-
-        function mouseMoveHandler(e) {
-            var relativeX = e.clientX - canvas.offsetLeft;
-            if (relativeX > 0 && relativeX < canvas.width) {
-                paddleX = relativeX - paddleWidth / 2
-            }
-        }
 
         function keyDownHandler(e) {
             if (e.key == "Right" || e.key == "ArrowRight") {
@@ -201,18 +164,15 @@
                     if (b.status == 1) {
                         if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
                             dy = -dy;
-                            b.status = 0;
-                            score++;
-                            if (score == brickRowCount * brickColumnCount) {
-                                alert("Congratulations!!");
-                                document.location.reload();
-                            }
+                            b.status=0;
                         }
                     }
                 }
             }
         }
-        draw();
+
+
+        var interval = setInterval(draw, 10);
     </script>
 </body>
 
